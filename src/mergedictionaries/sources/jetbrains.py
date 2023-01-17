@@ -28,6 +28,10 @@ def find_application_level_dictionaries():
     # ~/.config/JetBrains/PyCharm2021.3/options/cachedDictionary.xml
     base_path = get_configuration_path()
 
+    if not os.path.exists(base_path):
+        # No JetBrains IDE configuration folder detected
+        return []
+
     return [
         candidate
         for candidate in [
