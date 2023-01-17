@@ -12,8 +12,18 @@ import os
 from xml.etree import ElementTree
 
 
+DICTIONARY_FILENAMES = [
+    "cachedDictionary.xml",
+    "spellchecker-dictionary.xml"
+]
+
+
 def get_configuration_path():
-    return os.environ["HOME"] + "/.config/JetBrains"
+    """Find JetBrains configuration folder for Windows and UNIX systems."""
+    try:
+        return os.environ["APPDATA"] + "/JetBrains"
+    except KeyError:
+        return os.environ["HOME"] + "/.config/JetBrains"
 
 
 def find_application_level_dictionaries():
@@ -24,7 +34,8 @@ def find_application_level_dictionaries():
     return [
         candidate
         for candidate in [
-            os.path.join(base_path, entry.name, "options", "cachedDictionary.xml")
+            os.path.join(base_path, entry.name, "options", filename)
+            for filename in DICTIONARY_FILENAMES
             for entry in os.scandir(base_path)
             if entry.is_dir()
         ]
