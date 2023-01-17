@@ -12,10 +12,7 @@ import os
 from xml.etree import ElementTree
 
 
-DICTIONARY_FILENAMES = [
-    "cachedDictionary.xml",
-    "spellchecker-dictionary.xml"
-]
+DICTIONARY_FILENAMES = ["cachedDictionary.xml", "spellchecker-dictionary.xml"]
 
 
 def get_configuration_path():
