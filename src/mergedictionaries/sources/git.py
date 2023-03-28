@@ -142,6 +142,7 @@ def extract_words_from_all_dictionaries(target_repos, cached_repos):
 #     :: on_exit
 #   - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
+
 def on_exit(cached_repos):
     for _, repository_path in cached_repos.items():
         shutil.rmtree(repository_path)
