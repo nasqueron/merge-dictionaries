@@ -20,7 +20,6 @@ import tempfile
 
 
 class GitRepository:
-
     DICTIONARY_PATH = "dictionary.txt"
 
     def __init__(self, repository_remote, cached_repositories):
