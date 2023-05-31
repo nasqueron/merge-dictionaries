@@ -16,11 +16,19 @@ DICTIONARY_FILENAMES = ["cachedDictionary.xml", "spellchecker-dictionary.xml"]
 
 
 def get_configuration_path():
-    """Find JetBrains configuration folder for Windows and UNIX systems."""
+    """Find JetBrains configuration folder for Windows, macOS and other UNIX systems."""
     try:
         return os.environ["APPDATA"] + "/JetBrains"
     except KeyError:
-        return os.environ["HOME"] + "/.config/JetBrains"
+        candidates = [
+            os.environ["HOME"] + "/Library/Application Support/JetBrains",
+            os.environ["HOME"] + "/.config/JetBrains",
+        ]
+        for candidate in candidates:
+            if os.path.exists(candidate):
+                break
+
+        return candidate
 
 
 def find_application_level_dictionaries():
