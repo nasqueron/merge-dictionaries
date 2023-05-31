@@ -80,8 +80,21 @@ class GitRepository:
         return False
 
     @staticmethod
+    def get_hostname():
+        env_hostname_keys = [
+            "HOST",
+            "HOSTNAME",
+        ]
+        for key in env_hostname_keys:
+            if key in os.environ:
+                return os.environ[key]
+
+        return subprocess.run(["hostname"], capture_output=True).stdout.decode().strip()
+
+    @staticmethod
     def get_commit_message():
-        return f"Sync personal dictionary\n\nSync application: merge-dictionaries\nSync hostname: {os.environ['HOSTNAME']}"
+        hostname = GitRepository.get_hostname()
+        return f"Sync personal dictionary\n\nSync application: merge-dictionaries\nSync hostname: {hostname}"
 
     def run(self, commands):
         for command in commands:
