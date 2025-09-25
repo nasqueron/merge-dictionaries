@@ -17,6 +17,7 @@ import sys
 import yaml
 
 from mergedictionaries import write, output, sources
+from mergedictionaries.actions import DeleteAction
 
 
 #   -------------------------------------------------------------
@@ -74,6 +75,15 @@ def parse_arguments():
         help="Merge all found dictionaries",
     )
 
+    parser.add_argument(
+        "-D",
+        "--delete-words",
+        metavar="word",
+        dest="delete_words",
+        nargs="+",
+        help="Delete one or more words from the dictionaries",
+    )
+
     return parser.parse_args()
 
 
@@ -84,17 +94,24 @@ class Application:
     def run(self):
         args = parse_arguments()
 
-        if args.task is None:
+        task = "delete" if args.delete_words else args.task
+        if task is None:
             print("No task has been specified.", file=sys.stderr)
             sys.exit(1)
 
         self.context["config"] = parse_configuration()
         self.context["args"] = args
 
-        if args.task == "extract":
+        if task == "extract":
             self.run_extract_all_words(args.format)
-        elif args.task == "merge":
+        elif task == "merge":
             self.run_merge()
+        elif task == "delete":
+            action = DeleteAction(self.context)
+            action.run(args.delete_words)
+
+        self.on_exit()
+        sys.exit(0)
 
     def get_dictionary_writers(self):
         return [
@@ -109,8 +126,6 @@ class Application:
 
         for method in self.get_dictionary_writers():
             method(words)
-
-        self.on_exit()
 
     def get_words_sources(self):
         return [
@@ -137,8 +152,7 @@ class Application:
             for word in words:
                 print(word)
 
-            self.on_exit()
-            sys.exit(0)
+            return
 
         # We need a specific formatter
         formatters = get_dictionary_formatters()
@@ -148,12 +162,10 @@ class Application:
             sys.exit(2)
 
         print(formatters[words_format](words))
-        self.on_exit()
-        sys.exit(0)
 
     def on_exit(self):
         """Events to run before exiting to cleanup resources."""
-        sources.git.on_exit(self.context["git"])
+        sources.git.on_exit(self.context.get("git", {}))
 
 
 def run():

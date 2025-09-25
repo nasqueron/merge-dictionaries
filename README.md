@@ -63,6 +63,22 @@ git:
 
 See below if you wish to host the Git repository locally.
 
+### Delete words from a dictionary
+
+Now your dictionaries are synced, it can be tricky to delete words from them,
+as the next sync will overwrite them and restore words you removed if still in
+the Git repository or one local fi
+le.
+
+If you added a word in a dictionary, you can delete it:
+
+```shell
+$ merge-dictionaries --delete-words <word> [word ...]
+```
+
+This is a potentially destructive operation:
+your dictionary files will be overwritten.
+
 ## IDE support
 
 Currently, the following IDEs are supported
@@ -83,6 +99,7 @@ To add an IDE, you need to provide the following methods:
   * a method to dump the extracted words in the IDE format
 * write
   * a method to save the files, normally you can call the ones created
+  * a method to rewrite a file with a list of words, so delete works too
 
 ### How can I contribute?
 
@@ -91,23 +108,6 @@ You can commit your changes to the upstream by following instructions at https:/
 The canonical repository is https://devcentral.nasqueron.org/source/merge-dictionaries.git
 
 ## FAQ
-
-### Delete a word
-
-Not yet implemented. Here a proposal to implement this.
-
-Curently, the workflow is:
-
-[ extract ] -> { words } -> [ publish ]
-
-You want to add a new transformation step:
-
-[ extract ] -> { words } -> [ transform ] -> { words cleaned up } -> [ publish ]
-
-Add a transform step with an allowlist of the words to remove.
-
-It's not easy to detect if the user has removed a word explicitly
-from a dictionary, as we don't cache extracted words.
 
 ### Host locally the Git repository
 
