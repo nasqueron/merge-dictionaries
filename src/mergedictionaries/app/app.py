@@ -42,7 +42,7 @@ def get_configuration_path():
 def parse_configuration():
     try:
         with open(get_configuration_path()) as fd:
-            return yaml.safe_load(fd)
+            return yaml.safe_load(fd) or {}
     except OSError:
         return {}
 
